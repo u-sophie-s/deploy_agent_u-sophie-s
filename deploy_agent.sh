@@ -109,3 +109,18 @@ exit 0
 fi
 }
 
+run_app(){
+
+trap - SIGINT SIGSTP
+read -rp "Enter directory name of project:" name
+cd attendance_tracker_"$name"
+python3 attendance_checker.py
+cd ..
+read -rp "would you like to continue with archiving logs?" continuing 
+if [ "$continuing" = "yes" ]; then 
+	archive_logs
+else
+	exit 0
+fi
+
+}
