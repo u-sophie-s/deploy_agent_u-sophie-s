@@ -124,3 +124,33 @@ else
 fi
 
 }
+
+#archiving logs 
+
+archive_logs(){
+
+	read -rp "Enter directory name of the project:" name
+	cd attendance_tracker_"$name" || return
+	mkdir -p archives/attendance
+	mkdir -p archives/absent
+	timestamp=$(date +"%Y%m%d_%H%M%S")
+
+	if [ -f reports/attendance.log ]; then
+		mv reports/attendance.log archives/attendance/
+		 mv archives/attendance/attendance.log archives/attendance/attendance_"${timestamp}".log
+		 echo "attendance_${timestamp}.log archived"
+		 realpath archives/attendance/attendance_"${timestamp}".log
+	 else
+		 echo "attendance report not found"
+	fi
+
+	if [ -f reports/absent.log ]; then
+		mv reports/absent.log archives/absent/absent.log
+		mv archives/absent/absent.log archives/absent/absent_"${timestamp}".log
+		echo "absent_${timestamp}.log archived"
+		realpath archives/absent/absent_"${timestamp}".log
+	else
+		echo "absent log report not found"
+	fi
+}
+
