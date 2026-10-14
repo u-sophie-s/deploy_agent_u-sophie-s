@@ -154,3 +154,24 @@ archive_logs(){
 	fi
 }
 
+trap 'Signal_interrupt' SIGINT SIGSTP
+
+while true; do
+	echo "what feature would you like to run first:"
+	sleep 3
+	echo "For the first run, start with 1"
+	read -rp "select 1. Deploy 2. Run 3. Archiving logs:" feature
+	if [ "$feature" = 1 ]; then
+		deploy
+		break
+	elif [ "$feature" = 2 ]; then
+		run_app
+		break
+	elif [ "$feature" = 3 ]; then
+		archive_logs
+		break
+	else 
+		echo "selection does not match any feature, try again"
+	fi
+done
+
