@@ -1,5 +1,19 @@
 #!/usr/bin/bash
 
+#signal handling  each time a user presses ctrl+c or ctrl+z
+
+Signal_interrupt(){                                             echo "Deployment interrupted, archiving directories"
+	if [ -d attendance_tracker_"$name" ]; then
+		zip  -rm attendance_tracker_"${name}"_archived.zip attendance_tracker_"$name"
+	fi
+	if [ ! -d attendance_tracker_"$name" ]; then
+		echo " attendance_tracker_$name removed successfully"
+	fi
+
+	echo "terminating setup, runagain to start over"
+	exit 1
+}
+
 #feature1 the deploy
 
 deploy (){
@@ -72,7 +86,7 @@ chmod 600 attendance_tracker_"$name"/Helpers/config.json
 echo "The permissions of the files have been set to:"
 stat -c '%a'  attendance_tracker_"$name"/Helpers/config.json
 stat -c '%a' attendance_tracker_"$name"/attendance_checker.py
-#modify alert thresholds
+
 read -rp "would you like to change the thresholds for attendance? Answer 1 for yes 2 for No:" change
 if [ "$change" = 1 ]; then
 read -rp "Enter new warning threshold:" warning
@@ -84,6 +98,8 @@ else
 fi
 
 #running the app, feature 2
+
+trap - SIGINT SIGTSTP
 
 read -rp "would you like to continue with running the app? " continuing
 if [ "$continuing" = yes ]; then
